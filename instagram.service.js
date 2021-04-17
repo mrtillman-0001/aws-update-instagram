@@ -17,7 +17,11 @@ class InstagramService {
   async upload(imageUrl){
     const { ig } = this;
     const imageBuffer = await fetch(imageUrl).then(res => res.buffer());
-    await ig.account.changeProfilePicture(imageBuffer);
+    try {
+      await ig.account.changeProfilePicture(imageBuffer);  
+    } catch (error) {
+      console.error("failed to update profile icon: ", error);
+    }    
     await ig.publish.photo({
       file: imageBuffer,
       caption: imageUrl
