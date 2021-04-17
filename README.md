@@ -17,6 +17,7 @@ An AWS Lambda function to update your Instagram icon
 4. AWS Lambda function named `update-instagram`
     - set Timeout to 1 minute
     - must have IAM role assigned that includes:
+      - `AmazonS3FullAccess`
       - `SecretsManagerReadWrite`
       - `CloudWatchLogsFullAccess`
 
