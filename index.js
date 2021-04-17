@@ -9,15 +9,23 @@ const handler = async () => {
       .then(objects => {
         if(objects.length){
           const object = objects[0];
-          const imageUrl = `https://icons.avatarbox.io/${object.Key}`;
-          const instagram = new InstagramService();
-          instagram.login()
-            .then(() => instagram.upload(imageUrl))
-            .then(() => s3.deleteObject(object.Key))
-            .catch(err => {
-              console.error('Instagram update failed: ', err);
-            })
+          return {
+            imageUrl: `https://icons.avatarbox.io/${object.Key}`,
+            key: object.Key
+          };
         }
+      })
+      .then(async result => {
+        if(result){
+          const { imageUrl, key } = result;
+          const instagram = new InstagramService();
+          await instagram.login();
+          await instagram.upload(imageUrl);
+          await s3.deleteObject(key);
+        }
+      })
+      .catch(err => {
+        console.error('Instagram update failed: ', err);
       })
 }
 
