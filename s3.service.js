@@ -17,7 +17,7 @@ class S3Service {
       Bucket: this._bucketName,
       Key
     });
-    this._client.send(command);
+    return await this._client.send(command);
   }
 
   async listObjects() {
