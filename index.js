@@ -5,9 +5,13 @@ const s3 = new S3Service();
 const handler = async () => {
   return await 
     s3.listObjects()
-      .then(objects => objects.filter(object => object.Size > 0))
       .then(objects => {
-        if(objects.length){
+        if(objects && objects.length){
+          return objects.filter(object => object.Size > 0)
+        }
+      })
+      .then(objects => {
+        if(objects && objects.length){
           const object = objects[0];
           return {
             imageUrl: `https://icons.avatarbox.io/${object.Key}`,

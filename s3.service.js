@@ -13,6 +13,7 @@ class S3Service {
   }
 
   async deleteObject(Key){
+    // TODO: delete object versions
     const command = new DeleteObjectCommand({
       Bucket: this._bucketName,
       Key
