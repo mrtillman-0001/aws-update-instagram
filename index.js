@@ -22,6 +22,7 @@ const handler = async () => {
       .then(async result => {
         if(result){
           const { imageUrl, key } = result;
+          console.log('uploading image: ', imageUrl);
           const instagram = new InstagramService();
           await instagram.login();
           await instagram.upload(imageUrl);
