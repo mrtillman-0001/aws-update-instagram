@@ -3,6 +3,7 @@ const {
   DeleteObjectCommand,
   ListObjectsCommand,
 } = require("@aws-sdk/client-s3");
+const galleryIcons = require('../common/gallery-icons.json');
 
 class S3Service {
   constructor() {
@@ -12,8 +13,7 @@ class S3Service {
     });
   }
 
-  async deleteObject(Key){
-    // TODO: delete object versions
+  async deleteSeedIcon(Key){
     const command = new DeleteObjectCommand({
       Bucket: this._bucketName,
       Key
@@ -21,12 +21,18 @@ class S3Service {
     return await this._client.send(command);
   }
 
-  async listObjects() {
+  async getNextSeedIcon() {
     const command = new ListObjectsCommand({
-      Bucket: this._bucketName
+      Bucket: this._bucketName,
+      MaxKeys: 2,
     })
     const result = await this._client.send(command);
     return result.Contents;
+  }
+
+  getRandomIcon() {
+    const randomIndex = Math.floor(Math.random() * galleryIcons.length);
+    return galleryIcons[randomIndex];
   }
   
 }
