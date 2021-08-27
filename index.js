@@ -1,37 +1,31 @@
-const { S3Service } = require('./s3.service');
-const { InstagramService } = require('./instagram.service');
+const { S3Service } = require('./services/s3.service');
+const { InstagramService } = require('./services/instagram.service');
 const s3 = new S3Service();
 
 const handler = async () => {
-  return await 
-    s3.listObjects()
-      .then(objects => {
-        if(objects && objects.length){
-          return objects.filter(object => object.Size > 0)
-        }
-      })
-      .then(objects => {
-        if(objects && objects.length){
-          const object = objects[0];
-          return {
-            imageUrl: `https://icons.avatarbox.io/${object.Key}`,
-            key: object.Key
-          };
-        }
-      })
-      .then(async result => {
-        if(result){
-          const { imageUrl, key } = result;
-          console.log('uploading image: ', imageUrl);
-          const instagram = new InstagramService();
-          await instagram.login();
-          await instagram.upload(imageUrl);
-          await s3.deleteObject(key);
-        }
-      })
-      .catch(err => {
-        console.error('Instagram update failed: ', err);
-      })
+  const instagram = new InstagramService();
+  await instagram.login();
+
+  const seedIcons = await s3.getNextSeedIcon()
+                            .then(objects => {
+                              if(objects && objects.length){
+                                return objects.filter(object => object.Size > 0)
+                              }
+                            })
+
+  if(seedIcons && seedIcons.length){
+    const key = seedIcons[0].Key;
+    const imageUrl = `https://icons.avatarbox.io/${key}`;
+    const imageBuffer = await instagram.getImageBuffer(imageUrl);
+    await instagram.setProfileIcon(imageBuffer);
+    await instagram.postImage(imageBuffer, imageUrl);
+    await s3.deleteSeedIcon(key);
+  } else {
+    const imageUrl = s3.getRandomIcon();
+    const imageBuffer = await instagram.getImageBuffer(imageUrl);
+    await instagram.setProfileIcon(imageBuffer);
+  }
+
 }
 
 exports.handler = handler;
