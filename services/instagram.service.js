@@ -12,7 +12,11 @@ class InstagramService {
     const username = process.env.IG_USERNAME;
     const password = process.env.IG_PW;
     ig.state.generateDevice(username);
-    return await ig.account.login(username, password);
+    try {
+      await ig.account.login(username, password);
+    } catch (error) {
+      console.log("Instagram login failed: ", error);
+    }
   }
 
   async getImageBuffer(imageUrl){
