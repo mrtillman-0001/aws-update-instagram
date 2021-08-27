@@ -6,19 +6,15 @@ An AWS Lambda function to update your Instagram icon
 
 1. Instagram account
     - username + password
+    - use [demo.env](https://github.com/mrtillman-0001/aws-update-instagram/blob/main/demo.env) to create `.env` in project root
 2. AWS account
     - sign in as an IAM user
     - must have access key ID and secret access key
-    - configure AWS CLI
-3. AWS Secrets Manager secret named `instagram/login`
-    - type: Other
-    - key: username, value: your Instagram username
-    - key: password, value: your Instagram password
-4. AWS Lambda function named `update-instagram`
+    - [configure AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html)
+3. AWS Lambda function named `update-instagram`
     - set Timeout to 1 minute
     - must have IAM role assigned that includes:
       - `AmazonS3FullAccess`
-      - `SecretsManagerReadWrite`
       - `CloudWatchLogsFullAccess`
 
 ## Installation
@@ -65,15 +61,6 @@ $ npm run deploy
 |Statistic|Sum|
 |Threshold|Errors >= 1 for 1 datapoints within 5 minutes|
 |Type|Metric|
-
-## Sources
-
-[AWSJavaScriptSDK | Class: AWS.S3](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html)
-
-[NodeJS Instagram private API client](https://github.com/dilame/instagram-private-api)
-- [Class: AccountRepository](https://github.com/dilame/instagram-private-api/blob/master/docs/classes/_repositories_account_repository_.accountrepository.md#changeprofilepicture)
-- [Class: PublishService](https://github.com/dilame/instagram-private-api/blob/master/docs/classes/_services_publish_service_.publishservice.md#photo)
-
 
 ## License
 
